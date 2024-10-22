@@ -11,10 +11,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       localStorage.setItem('token', response.data.token); // Store token
       localStorage.setItem('userId', response.data.userId); // Store user ID
-      navigate('/profile'); // Redirect to profile after login
+      console.log("hello")
+      navigate('/profile');
+      console.log("hii") // Redirect to profile after login
     } catch (error) {
       console.error(error);
       setMessage('Error logging in. Please check your credentials.'); // Show error message

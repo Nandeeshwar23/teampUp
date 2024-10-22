@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [profile, setProfile] = useState({
+    userId:'',
     name: '',
     age: '',
     location: '',
@@ -13,19 +14,24 @@ const Profile = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [message, setMessage] = useState(''); // Message state for feedback
   const navigate = useNavigate();
+  
 
   useEffect(() => {
+    console.log(profile)
+    let userId=localStorage.getItem('userId')
+    console.log(userId)
+  setProfile((profile)=>({ ...profile, userId:userId }))
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/profile', {
+        const response = await axios.get('http://localhost:5000/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (response.data) {
           // Set profile state with fetched data
-          setProfile(response.data);
+          // setProfile(response.data);
         } else {
           // If no profile exists, do nothing
           setMessage('Please create your profile.');
@@ -42,12 +48,15 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(profile)
+    
     try {
-      await axios.post('/api/profile', profile, {
+      await axios.post('http://localhost:5000/api/profile', profile, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
+      console.log("yoyi")
       navigate('/home'); // Redirect to home if profile is created or updated
     } catch (error) {
       console.error(error);

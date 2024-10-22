@@ -66,17 +66,17 @@ const App = () => {
           <Route 
             path="/home" 
             element={
-              <PrivateRoute>
+              // <PrivateRoute>
                 <Home />
-              </PrivateRoute>
+              // </PrivateRoute>
             } 
           />
           <Route 
             path="/profile" 
             element={
-              <PrivateRoute>
+              // <PrivateRoute>
                 <Profile />
-              </PrivateRoute>
+              // </PrivateRoute>
             } 
           />
           {/* Not Found Route */}
