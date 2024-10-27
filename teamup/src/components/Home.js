@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';  // Correct imports
-import { FaUserCircle } from 'react-icons/fa'; // Using react-icons for the profile icon
+// Home.js
+import React, { useState, useEffect } from 'react';
+import { FaUserCircle } from 'react-icons/fa';
 import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import carousel styles
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const [profile, setProfile] = useState(null);  // State for profile
-  const [error, setError] = useState('');        // State for error handling
-  const [showProfile, setShowProfile] = useState(false); // State to toggle profile display
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState('');
+  const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
 
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const user = localStorage.getItem('userId')
-      console.log(user,token,"hello");
+      const user = localStorage.getItem('userId');
       const response = await fetch('http://localhost:5000/api/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
-        },body: JSON.stringify(user),
+        },
+        body: JSON.stringify(user),
       });
-      console.log(response)
 
       if (response.ok) {
         const profileData = await response.json();
         setProfile(profileData);
       } else {
-        const errorText = await response.text(); // Debugging response
-        console.error('Response error:', errorText);
         setError('Failed to fetch profile data.');
       }
     } catch (err) {
-      console.error('Fetch error:', err); // Debugging line
       setError('An error occurred while fetching profile data.');
     }
   };
@@ -43,12 +42,19 @@ const Home = () => {
     setShowProfile(!showProfile);
   };
 
+  const handleChatClick = () => {
+    navigate('/chat');
+  };
+
   return (
     <div>
       <nav className="bg-blue-500 p-4">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-white text-2xl">TeamUp</div>
-          <div className="relative">
+          <div className="flex items-center">
+            <button onClick={handleChatClick} className="text-white mr-4">
+              Let's Chat
+            </button>
             <button onClick={handleProfileClick} className="text-white">
               <FaUserCircle size={30} />
             </button>
@@ -79,7 +85,6 @@ const Home = () => {
             showStatus={false} 
             dynamicHeight={true}
           >
-            {/* Sports Images with URLs */}
             <div>
               <img src="https://images.pexels.com/photos/114296/pexels-photo-114296.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Soccer" className="rounded-lg" />
               <p className="legend">Soccer</p>

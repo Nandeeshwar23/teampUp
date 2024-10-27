@@ -4,63 +4,78 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [profile, setProfile] = useState({
-    userId:'',
+    userId: '',
     name: '',
     age: '',
     location: '',
     sport: '',
     bio: ''
   });
-  const [loading, setLoading] = useState(true); // Loading state
-  const [message, setMessage] = useState(''); // Message state for feedback
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  
 
   useEffect(() => {
-    console.log(profile)
-    let userId=localStorage.getItem('userId')
-    console.log(userId)
-  setProfile((profile)=>({ ...profile, userId:userId }))
+    const userId = localStorage.getItem('userId');
+    setProfile((prevProfile) => ({ ...prevProfile, userId }));
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/', {
+        const response = await axios.get('http://localhost:5000/api/profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (response.data) {
-          // Set profile state with fetched data
-          // setProfile(response.data);
+          setProfile(response.data);
         } else {
-          // If no profile exists, do nothing
           setMessage('Please create your profile.');
         }
       } catch (error) {
         console.error(error);
         setMessage('Error fetching profile. Please try again.');
       } finally {
-        setLoading(false); // Set loading to false after fetch
+        setLoading(false);
       }
     };
+
     fetchProfile();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(profile)
-    
+
     try {
-      await axios.post('http://localhost:5000/api/profile', profile, {
+      const token = localStorage.getItem('token');
+      // Check if the profile already exists
+      const response = await axios.get('http://localhost:5000/api/profile', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      console.log("yoyi")
-      navigate('/home'); // Redirect to home if profile is created or updated
+
+      if (response.data) {
+        // Update existing profile
+        await axios.put('http://localhost:5000/api/profile', profile, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        // Create new profile
+        await axios.post('http://localhost:5000/api/profile', profile, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+
+      navigate('/home');
     } catch (error) {
       console.error(error);
-      setMessage('Error saving profile. Please try again.'); // User-friendly error message
+      setMessage('Error saving profile. Please try again.');
     }
   };
 
@@ -91,7 +106,7 @@ const Profile = () => {
               onChange={(e) => setProfile({ ...profile, age: e.target.value })}
               placeholder="Age"
               required
-              min="1" // Ensure age is at least 1
+              min="1"
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
