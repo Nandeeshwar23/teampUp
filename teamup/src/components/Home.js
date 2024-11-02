@@ -9,6 +9,7 @@ const Home = () => {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
   const [showProfile, setShowProfile] = useState(false);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const navigate = useNavigate();
 
   const fetchProfile = async () => {
@@ -19,13 +20,15 @@ const Home = () => {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ userId: user }),
       });
 
       if (response.ok) {
         const profileData = await response.json();
         setProfile(profileData);
+        setError('');
       } else {
         setError('Failed to fetch profile data.');
       }
@@ -46,20 +49,59 @@ const Home = () => {
     navigate('/chat');
   };
 
+  const handleLogoutClick = (e) => {
+    e.preventDefault(); // Prevent default button behavior
+    setShowLogoutPopup(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    navigate('/login'); // Redirect to login page after logout
+  };
+
+  // Testimonials data
+  const testimonials = [
+    {
+      id: 1,
+      name: "John Doe",
+      content: "TeamUp helped me connect with amazing players in my area!",
+      sport: "Soccer"
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      content: "I love the organized events and the community spirit!",
+      sport: "Basketball"
+    },
+    {
+      id: 3,
+      name: "Mark Wilson",
+      content: "Great way to improve skills and meet new friends!",
+      sport: "Tennis"
+    },
+  ];
+
   return (
     <div>
       <nav className="bg-blue-500 p-4">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-white text-2xl">TeamUp</div>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
             <button onClick={handleChatClick} className="text-white mr-4">
               Let's Chat
+            </button>
+            <button onClick={handleLogout} className="text-white">
+              Logout
             </button>
             <button onClick={handleProfileClick} className="text-white">
               <FaUserCircle size={30} />
             </button>
             {showProfile && profile && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-4">
+              <div 
+                className="absolute mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-4"
+                style={{ top: '60px', right: '20px' }}
+              >
                 <p><strong>Name:</strong> {profile.name}</p>
                 <p><strong>Age:</strong> {profile.age}</p>
                 <p><strong>Location:</strong> {profile.location}</p>
@@ -67,7 +109,7 @@ const Home = () => {
                 <p><strong>Bio:</strong> {profile.bio}</p>
               </div>
             )}
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 ml-4">{error}</p>}
           </div>
         </div>
       </nav>
@@ -75,8 +117,7 @@ const Home = () => {
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold text-center mb-6">Welcome to TeamUp</h1>
 
-        {/* Carousel Section */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto mb-6">
           <Carousel 
             showThumbs={false} 
             infiniteLoop={true} 
@@ -107,6 +148,56 @@ const Home = () => {
             </div>
           </Carousel>
         </div>
+
+        {/* Upcoming Events Section */}
+        <h2 className="text-2xl font-bold text-center mb-4">Upcoming Events</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg shadow-md">
+            <h3 className="text-xl font-semibold">Soccer Tournament</h3>
+            <p className="text-gray-600">Date: November 10, 2024</p>
+            <p className="text-gray-600">Location: Central Park</p>
+            <p className="mt-2">Join us for an exciting soccer tournament! All skill levels welcome.</p>
+          </div>
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg shadow-md">
+            <h3 className="text-xl font-semibold">Basketball Meetup</h3>
+            <p className="text-gray-600">Date: November 15, 2024</p>
+            <p className="text-gray-600">Location: City Sports Complex</p>
+            <p className="mt-2">Meet other basketball enthusiasts and play some pickup games.</p>
+          </div>
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg shadow-md">
+            <h3 className="text-xl font-semibold">Tennis Workshop</h3>
+            <p className="text-gray-600">Date: November 20, 2024</p>
+            <p className="text-gray-600">Location: Community Tennis Courts</p>
+            <p className="mt-2">Learn new skills and techniques with our professional coach.</p>
+          </div>
+        </div>
+
+        {/* Why Choose TeamUp Section */}
+        <div className="mt-8 p-4 bg-gray-100 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-center mb-4">Why Choose TeamUp?</h2>
+          <ul className="list-disc list-inside">
+            <li>Connect with local sports enthusiasts.</li>
+            <li>Participate in organized events and tournaments.</li>
+            <li>Find and create pickup games in your area.</li>
+            <li>Improve your skills with workshops and training.</li>
+            <li>Enjoy a friendly and inclusive community.</li>
+          </ul>
+        </div>
+
+        {/* Testimonials Section */}
+        <div className="mt-8 p-4 bg-gray-100 rounded-lg shadow-md">
+  <h2 className="text-2xl font-bold text-center mb-4 mt-8">What Our Members Say</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {testimonials.map((testimonial) => (
+      <div key={testimonial.id} className="border rounded-lg p-4 bg-white shadow-md">
+        <h3 className="text-xl font-semibold">{testimonial.name}</h3>
+        <p className="text-gray-600">{testimonial.content}</p>
+        <p className="mt-2 text-gray-500 italic">- {testimonial.sport}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
       </div>
     </div>
   );

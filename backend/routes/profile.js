@@ -3,13 +3,15 @@ const Profile = require('../models/Profile');
 const router = express.Router();
 
 // GET /api/profile
-router.get('/', async (req, res) => {
+router.put('/', async (req, res) => {
   try {
-    if (!req.user || !req.user.id) {
+  const { userId } = req.body; // Extract userId from request body
+    console.log('Received PUT request with userId:', userId);
+    if (!userId) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    const profile = await Profile.findOne({ userId: req.user.id });
+    const profile = await Profile.findOne({ userId});
     
     if (!profile) return res.status(404).json({ message: 'Profile not found' });
     
@@ -41,20 +43,22 @@ router.post('/', async (req, res) => {
   }
 });
 
+
+
 // PUT /api/profile/:id
-router.put('/:id', async (req, res) => {
-  const { name, age, location, sport, bio } = req.body;
+// router.put('/:id', async (req, res) => {
+//   const { name, age, location, sport, bio } = req.body;
   
-  try {
-    const profile = await Profile.findByIdAndUpdate(req.params.id, { name, age, location, sport, bio }, { new: true });
+//   try {
+//     const profile = await Profile.findByIdAndUpdate(req.params.id, { name, age, location, sport, bio }, { new: true });
     
-    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+//     if (!profile) return res.status(404).json({ message: 'Profile not found' });
     
-    res.json(profile);
-  } catch (error) {
-    console.error('Error updating profile:', error.message);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+//     res.json(profile);
+//   } catch (error) {
+//     console.error('Error updating profile:', error.message);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+//  });
 
 module.exports = router;

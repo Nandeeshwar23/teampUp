@@ -22,14 +22,23 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const userId = localStorage.getItem('userId');
+        console.log(userId);
+        console.log('hi')
+        const response = await axios.put(
+          'http://localhost:5000/api/profile',
+          { userId: userId }, // Ensure data is sent in the right format
+          {
+              headers: {
+                  'x-auth-token': token, // Include token in headers if required by backend
+                  'Content-Type': 'application/json'
+              }
+          }
+      );
 
         if (response.data) {
           setProfile(response.data);
+          navigate('/Home');
         } else {
           setMessage('Please create your profile.');
         }
@@ -46,31 +55,11 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const token = localStorage.getItem('token');
-      // Check if the profile already exists
-      const response = await axios.get('http://localhost:5000/api/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.data) {
-        // Update existing profile
-        await axios.put('http://localhost:5000/api/profile', profile, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      } else {
+      try{
         // Create new profile
-        await axios.post('http://localhost:5000/api/profile', profile, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const Profile=await axios.post('http://localhost:5000/api/profile', profile, {
+          data: profile
         });
-      }
 
       navigate('/home');
     } catch (error) {
