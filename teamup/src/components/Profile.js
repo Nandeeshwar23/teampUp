@@ -44,7 +44,7 @@ const Profile = () => {
         }
       } catch (error) {
         console.error(error);
-        setMessage('Error fetching profile. Please try again.');
+        setMessage('Please create your profile if you are a new user.');
       } finally {
         setLoading(false);
       }
@@ -76,7 +76,7 @@ const Profile = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Create Profile</h2>
-        {message && <p className="text-red-500 text-center mb-4">{message}</p>}
+        {message && <p className="text-green-500 text-center mb-4">{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input

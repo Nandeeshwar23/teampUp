@@ -38,8 +38,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login', { replace: true }); // Redirect to login if not authenticated
+    } else {
+      fetchProfile();
+    }
+  }, [navigate]);
 
   const handleProfileClick = () => {
     setShowProfile(!showProfile);
