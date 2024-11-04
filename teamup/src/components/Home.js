@@ -69,19 +69,19 @@ const Home = () => {
   const testimonials = [
     {
       id: 1,
-      name: "John Doe",
+      name: "Lionel Messi",
       content: "TeamUp helped me connect with amazing players in my area!",
       sport: "Soccer"
     },
     {
       id: 2,
-      name: "Jane Smith",
+      name: "LeBron James",
       content: "I love the organized events and the community spirit!",
       sport: "Basketball"
     },
     {
       id: 3,
-      name: "Mark Wilson",
+      name: "Roger Federer",
       content: "Great way to improve skills and meet new friends!",
       sport: "Tennis"
     },

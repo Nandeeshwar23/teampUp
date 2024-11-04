@@ -105,7 +105,7 @@ const LandingPage = () => {
               <h4 className="text-xl font-semibold mb-4">Contact Us</h4>
               <p className="mb-2">Email: info@teamup.com</p>
               <p className="mb-2">Phone: (123) 456-7890</p>
-              <p>Address: 123 Sports Street, Athleticville, AT 12345</p>
+              <p>Address: Sports Street, Athleticville, AT KMIT</p>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-6 text-center">
