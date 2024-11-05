@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://teamup-backend-amtu.onrender.com');
 
 const ChatRoom = ({ roomName, user }) => {
   const [message, setMessage] = useState('');

@@ -16,7 +16,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('userId');
-      const response = await fetch('http://localhost:5000/api/profile', {
+      const response = await fetch('https://teamup-backend-amtu.onrender.com/api/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

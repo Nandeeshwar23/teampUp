@@ -16,7 +16,7 @@ const Register = () => {
     setMessage(''); // Reset message before new submission
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { email, password });
+      await axios.post('https://teamup-backend-amtu.onrender.com/api/auth/register', { email, password });
       setMessage('Registration successful');
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
