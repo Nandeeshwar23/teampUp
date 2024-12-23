@@ -10,13 +10,14 @@ const Home = () => {
   const [error, setError] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [otherProfiles, setOtherProfiles] = useState([]);
   const navigate = useNavigate();
 
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('userId');
-      const response = await fetch('https://teamup-backend-amtu.onrender.com/api/profile', {
+      const response = await fetch('http://localhost:5000/api/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -36,6 +37,41 @@ const Home = () => {
       setError('An error occurred while fetching profile data.');
     }
   };
+  
+  //for fetching others data.
+  const fetchOtherProfiles = async () => {
+    console.log('Fetching other profiles...');
+    try {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId'); // Logged-in user's ID
+  
+      const response = await fetch('http://localhost:5000/api/profile/others', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+        },
+        body: JSON.stringify({ userId }), // Send logged-in user's ID
+      });
+  
+      if (response.ok) {
+        const otherProfiles = await response.json(); // Receive list of profiles
+        console.log('Other Profiles:', otherProfiles); // Debug log
+        setOtherProfiles(otherProfiles); // Update state with other profiles
+        console.log('Updated Other Profiles:', otherProfiles);
+        setError('');
+      } else {
+        setError('Failed to fetch other profiles.');
+      }
+    } catch (err) {
+      console.error('An error occurred while fetching other profiles:', err.message);
+      setError('An error occurred while fetching other profiles.');
+    }
+  };
+  
+  
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -93,6 +129,12 @@ const Home = () => {
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-white text-2xl">TeamUp</div>
           <div className="flex items-center space-x-2">
+          <button 
+          onClick={fetchOtherProfiles} 
+          className="text-white mr-4"
+        >
+          View Other Profiles
+        </button>
             <button onClick={handleChatClick} className="text-white mr-4">
               Let's Chat
             </button>
@@ -153,6 +195,24 @@ const Home = () => {
             </div>
           </Carousel>
         </div>
+        {/* Display other users' profiles */}
+<h2 className="text-2xl font-semibold mt-8 mb-4">Other Users:</h2>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {otherProfiles.length > 0 ? (
+    otherProfiles.map((otherProfile) => (
+      <div key={otherProfile._id} className="border rounded-lg p-4 bg-white shadow-md">
+        <h3 className="text-xl font-semibold">{otherProfile.name}</h3>
+        <p><strong>Age:</strong> {otherProfile.age}</p>
+        <p><strong>Location:</strong> {otherProfile.location}</p>
+        <p><strong>Sport:</strong> {otherProfile.sport}</p>
+        <p><strong>Bio:</strong> {otherProfile.bio}</p>
+      </div>
+    ))
+  ) : (
+    <p>No other users found.</p>
+  )}
+</div>
+
 
         {/* Upcoming Events Section */}
         <h2 className="text-2xl font-bold text-center mb-4">Upcoming Events</h2>

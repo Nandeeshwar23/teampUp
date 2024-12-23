@@ -26,7 +26,7 @@ const Profile = () => {
         console.log(userId);
         console.log('hi')
         const response = await axios.put(
-          'https://teamup-backend-amtu.onrender.com/api/profile',
+          'http://localhost:5000/api/profile',
           { userId: userId }, // Ensure data is sent in the right format
           {
               headers: {
@@ -57,7 +57,7 @@ const Profile = () => {
     e.preventDefault();
       try{
         // Create new profile
-        const Profile=await axios.post('https://teamup-backend-amtu.onrender.com/api/profile', profile, {
+        const Profile=await axios.post('http://localhost:5000/api/profile', profile, {
           data: profile
         });
 

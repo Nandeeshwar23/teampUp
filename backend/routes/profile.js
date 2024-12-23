@@ -6,7 +6,7 @@ const router = express.Router();
 router.put('/', async (req, res) => {
   try {
   const { userId } = req.body; // Extract userId from request body
-    console.log('Received PUT request with userId:', userId);
+    //console.log('Received PUT request with userId:', userId);
     if (!userId) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
@@ -42,6 +42,31 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// GET /api/profile/others
+router.post('/others', async (req, res) => {
+  try {
+    const { userId } = req.body; // Extract userId from request body
+
+    if (!userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    // Find profiles of other users
+    const profiles = await Profile.find({ userId: { $ne: userId } }); // $ne excludes the userId
+
+    if (!profiles.length) {
+      return res.status(404).json({ message: 'No other profiles found' });
+    }
+
+    res.json(profiles); // Send back the profiles
+  } catch (error) {
+    console.error('Error fetching other profiles:', error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 
 
 
